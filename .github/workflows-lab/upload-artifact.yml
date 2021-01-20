@@ -1,0 +1,67 @@
+name: Test Upload
+
+on: [ push, pull_request, workflow_dispatch ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - run: |
+          echo "" > test_empty.txt
+          echo "1" > test_small.txt
+          dd if=/dev/urandom of=test_medium.txt bs=1M count=1
+          dd if=/dev/urandom of=test_large.txt bs=1M count=100
+          
+      - uses: actions/upload-artifact@v2
+        with:
+          name: empty
+          path: test_empty.txt
+           
+      - uses: actions/upload-artifact@v2
+        with:
+          name: small
+          path: test_small.txt
+           
+      - uses: actions/upload-artifact@v2
+        with:
+          name: medium
+          path: test_medium.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: large
+          path: test_large.txt
+           
+      - uses: actions/upload-artifact@v2
+        with:
+          name: multi
+          path: *.txt
+           
+      - uses: actions/download-artifact@v2
+        with:
+          name: empty
+          path: download/
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: small
+          path: download/
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: medium
+          path: download/
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: large
+          path: download/
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: multi
+          path: download/multi
+          
+      - run: ls -alR
+
